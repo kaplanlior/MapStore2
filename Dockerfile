@@ -34,6 +34,7 @@ RUN mkdir -p ${DATA_DIR}
 RUN cp ${CATALINA_BASE}/docker/wait-for-postgres.sh /usr/bin/wait-for-postgres
 
 RUN apt-get update \
+    && apt-get install --yes zip \
     && apt-get install --yes postgresql-client \
     && apt-get clean \
     && apt-get autoclean \
@@ -42,6 +43,9 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /usr/share/man/* \
     && rm -rf /usr/share/doc/*
+
+# Fix CVE-2015-4852
+RUN zip "${MAPSTORE_WEBAPP_DST}/mapstore.war" -d "WEB-INF/lib/commons-collections-3.2.1.jar"
 
 WORKDIR ${CATALINA_BASE}
 
